@@ -1,0 +1,27 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    
+    - uses: azure/docker-login@v1
+      with:
+        login-server: comunidadecloudiacacr.azurecr.io/myiacacr
+        username: ${{ secrets.ACR_USERNAME }}
+        password: ${{ secrets.ACR_PASS }}
+   
+    - run: |
+        docker build -t comunidadecloudiacacr.azurecr.io/myiacacr:${{github.run_number}} .
+        docker push comunidadecloudiacacr.azurecr.io/myiacacr:${{github.run_number}}
+    
